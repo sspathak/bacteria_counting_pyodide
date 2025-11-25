@@ -1,0 +1,3 @@
+MAX_DIAMETER = 17
+SIZE = [5, 70]
+C = 5
