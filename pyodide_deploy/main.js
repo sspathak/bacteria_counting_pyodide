@@ -81,7 +81,12 @@ processBtn.addEventListener('click', async () => {
         // but explicitly using to_py() or just passing it often works.
         // Let's rely on Pyodide's automatic conversion for Uint8Array to bytes.
         
-        const jsonResult = processor.process_image_data(uint8Array);
+        const minSize = parseInt(document.getElementById('minSize').value) || 5;
+        const maxSize = parseInt(document.getElementById('maxSize').value) || 70;
+        const maxDiameter = parseInt(document.getElementById('maxDiameter').value) || 17;
+        const threshold = parseInt(document.getElementById('threshold').value) || 5;
+
+        const jsonResult = processor.process_image_data(uint8Array, minSize, maxSize, maxDiameter, threshold);
         const result = JSON.parse(jsonResult);
         
         if (result.error) {
@@ -195,7 +200,24 @@ window.analyze_bacteria = async function(args) {
         }
         const data = pyodide.FS.readFile('input.png');
         
-        const jsonResult = processor.process_image_data(data);
+        let minSize = 5, maxSize = 70, maxDiameter = 17, threshold = 5;
+        
+        // Use DOM values as base, but allow args to override
+        if (document.getElementById('minSize')) {
+             minSize = parseInt(document.getElementById('minSize').value) || 5;
+             maxSize = parseInt(document.getElementById('maxSize').value) || 70;
+             maxDiameter = parseInt(document.getElementById('maxDiameter').value) || 17;
+             threshold = parseInt(document.getElementById('threshold').value) || 5;
+        }
+
+        if (args && typeof args === 'object') {
+            if (args.minSize !== undefined) minSize = args.minSize;
+            if (args.maxSize !== undefined) maxSize = args.maxSize;
+            if (args.maxDiameter !== undefined) maxDiameter = args.maxDiameter;
+            if (args.threshold !== undefined) threshold = args.threshold;
+        }
+        
+        const jsonResult = processor.process_image_data(data, minSize, maxSize, maxDiameter, threshold);
         const result = JSON.parse(jsonResult);
 
         if (result.error) {

@@ -9,7 +9,7 @@ import sys
 # so we can import them directly.
 from extract_feature import BacteriaGenerator, C, MAX_DIAMETER, SIZE
 
-def process_image_data(image_data_bytes):
+def process_image_data(image_data_bytes, min_size=SIZE[0], max_size=SIZE[1], max_diameter=MAX_DIAMETER, gradient_threshold=C):
     try:
         # Setup paths
         input_filename = "input.png"
@@ -37,9 +37,9 @@ def process_image_data(image_data_bytes):
             return json.dumps({"error": "Could not decode image", "count": 0, "images": {}})
             
         # Initialize generator
-        # BacteriaGenerator(size_bounds, max_diameter, debug, cover_corners)
+        # BacteriaGenerator(size_bounds, max_diameter, debug, cover_corners, C)
         # We enable debug to get the intermediate images
-        gen = BacteriaGenerator(size_bounds=SIZE, max_diameter=MAX_DIAMETER, debug=True, cover_corners=True)
+        gen = BacteriaGenerator(size_bounds=[min_size, max_size], max_diameter=max_diameter, debug=True, cover_corners=False, C=gradient_threshold)
         
         # Process
         # generate_bacts(self, img, label, image_name = "current_image.bmp", debug_path = "for_debug")

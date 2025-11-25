@@ -180,13 +180,15 @@ def invert_img(img):
 
 
 class BacteriaGenerator:
-    def __init__(self, size_bounds, max_diameter, debug, cover_corners):
+    def __init__(self, size_bounds, max_diameter, debug, cover_corners, C=C):
         self.size_bounds = size_bounds
         self.max_diameter = max_diameter
         self.debug = debug
         self.cover_corners = cover_corners
+        self.C = C
     
-    def preprocess_v2(self, orig_img, C = C):
+    def preprocess_v2(self, orig_img, C = None):
+        if C is None: C = self.C
         img = cv2.cvtColor(orig_img, cv2.COLOR_BGR2GRAY)
         smoothed_image = img
         grad_x = cv2.Sobel(smoothed_image, cv2.CV_32F, 1, 0, ksize=1)
@@ -199,7 +201,8 @@ class BacteriaGenerator:
         img = np.logical_and(grad_img <= 255-C, grad_img >= C).astype(np.uint8)
         return img
 
-    def preprocess_v3(self, orig_img, C=C, debug_path=""):
+    def preprocess_v3(self, orig_img, C=None, debug_path=""):
+        if C is None: C = self.C
         img = cv2.cvtColor(orig_img, cv2.COLOR_BGR2GRAY)
         smoothed_image = img
         grad_x = cv2.Sobel(smoothed_image, cv2.CV_32F, 1, 0, ksize=1)
@@ -216,7 +219,8 @@ class BacteriaGenerator:
             cv2.imwrite(os.path.join(debug_path, 'quad_vis.png'), quad_vis)
         return grad_img
     
-    def preprocess_v4(self, orig_img, C=C, debug_path=""):
+    def preprocess_v4(self, orig_img, C=None, debug_path=""):
+        if C is None: C = self.C
         # Single sided preprocessing
         img = cv2.cvtColor(orig_img, cv2.COLOR_BGR2GRAY)
         smoothed_image = img
@@ -303,7 +307,8 @@ class BacteriaGenerator:
         reconstructed_row[filled_indices] = 1
         return reconstructed_row
     
-    def preprocess_v5(self, orig_img, C=C, debug_path="", img_name=""):
+    def preprocess_v5(self, orig_img, C=None, debug_path="", img_name=""):
+        if C is None: C = self.C
         img = cv2.cvtColor(orig_img, cv2.COLOR_BGR2GRAY)
         smoothed_image = img
         # smoothed_image = cv2.GaussianBlur(img, (3, 3), sigmaX=0.8, sigmaY=0.8)
@@ -369,7 +374,7 @@ class BacteriaGenerator:
     def generate_bacts(self, img, label, image_name = "current_image.bmp", debug_path = "for_debug"):
         if self.debug:
             debug_img = img.copy()
-        processed_img = self.preprocess_v5(img, debug_path=debug_path, img_name=image_name)
+        processed_img = self.preprocess_v5(img, C=self.C, debug_path=debug_path, img_name=image_name)
         if self.cover_corners:
             processed_img = roi(processed_img, is_threshold=True)
         if self.debug:

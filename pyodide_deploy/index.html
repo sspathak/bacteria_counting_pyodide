@@ -81,6 +81,12 @@
         <h1>Bacteria Counter</h1>
         
         <div class="controls">
+            <div class="settings" style="margin-bottom: 15px;">
+                <label title="Minimum bacteria size in pixels">Min Size: <input type="number" id="minSize" value="5" style="width: 60px; margin-right: 10px;"></label>
+                <label title="Maximum bacteria size in pixels">Max Size: <input type="number" id="maxSize" value="70" style="width: 60px; margin-right: 10px;"></label>
+                <label title="Maximum diameter in pixels">Max Diameter: <input type="number" id="maxDiameter" value="17" style="width: 60px; margin-right: 10px;"></label>
+                <label title="Gradient threshold (C)">Threshold (C): <input type="number" id="threshold" value="5" style="width: 60px;"></label>
+            </div>
             <input type="file" id="fileInput" accept="image/*">
             <button id="processBtn" disabled>Process</button>
         </div>
