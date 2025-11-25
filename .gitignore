@@ -4,3 +4,4 @@ grad_log/
 extracted_data/
 __pycache__/
 *.pyc
+.DS_Store
